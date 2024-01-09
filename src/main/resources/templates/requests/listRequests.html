@@ -1,0 +1,107 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>JobApp | List of Job Applications</title>
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link th:href="@{/bootstrap/css/jumbotron.css}" rel="stylesheet">
+    <link th:href="@{/bootstrap/css/sticky-footer-navbar.css}" rel="stylesheet">
+    <link href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" rel="stylesheet">
+</head>
+
+<body>
+
+<header th:insert="~{fragments/menu :: menu-principal}"></header>
+
+<main role="main">
+    <hr>
+    <div class="container">
+
+        <div class="card">
+            <h4 class="card-header"><strong>List of Job Applications</strong></h4>
+            <div class="card-body">
+                <div th:if="${msg != null}" class='alert alert-success' th:text="${msg}" role='alert'></div>
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Category</th>
+                        <th scope="col">Vacancy</th>
+                        <th scope="col">Candidate Name</th>
+                        <th scope="col">Received</th>
+                        <th scope="col">Operations</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="request : ${requests.content}">
+                        <td th:text="${request.vacancy.category.name}"></td>
+                        <td th:text="${request.vacancy.name}"></td>
+                        <td th:text="${request.user.name}"></td>
+                        <td th:text="${request.date}"></td>
+                        <td>
+                            <a th:href="@{/cv/{file} (file=${request.file}) } " target="_blank"
+                               class="btn btn-success btn-sm" role="button" title="Download Resume/CV."><i
+                                    class="fas fa-download" aria-hidden="true"></i></a>
+                            <a th:href="@{/requests/delete/{id} (id=${request.id}) }"
+                               class="btn btn-success btn-sm confirmar" role="button" title="Delete the record."><i
+                                    class="fas fa-trash" aria-hidden="true"></i></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <nav th:if="${requests.totalPages > 0}" aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${requests.number == 0 ? 'disabled' : ''}">
+                            <a th:href="@{/requests/indexPaginate(page=${requests.number - 1})}"
+                               class="page-link">Previous</a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${i eq requests.number + 1} ? 'active'"
+                            th:each="i : ${#numbers.sequence( 1, requests.totalPages, 1)}">
+                            <a class="page-link" th:href="@{/requests/indexPaginate?page={tmpPag} (tmpPag=${i-1}) }"
+                               th:text="${i}" th:title="${'Page '+ i}" data-toggle="tooltip"></a>
+                        </li>
+                        <li class="page-item"
+                            th:classappend="${requests.number == (requests.totalPages - 1) ? 'disabled' : ''}">
+                            <a th:href="@{/requests/indexPaginate(page=${requests.number + 1})}"
+                               class="page-link">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </div> <!-- /container -->
+
+</main>
+
+<footer th:insert="~{fragments/footer :: pie-pagina}" class="footer"></footer>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+
+<script>
+	
+		var dialogoConfirm = function (e) {
+			if (!confirm('¿Realmente desea eliminar el registro?')) 
+				e.preventDefault();
+		};
+
+		document.querySelectorAll('.confirmar').forEach(function(elemento) {
+			elemento.addEventListener('click', dialogoConfirm, false);
+		});
+	
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>JobApp | Job Offer Details</title>
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link th:href="@{/bootstrap/css/jumbotron.css}" rel="stylesheet">
+    <link th:href="@{/bootstrap/css/sticky-footer-navbar.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<header th:insert="~{fragments/menu :: 'menu-principal'}">
+
+</header>
+
+<main role="main">
+    <hr>
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-3">
+                <img class="rounded mx-auto d-block" th:src="@{/logos/{img} (img=${vacancy.image}) }"
+                     alt="Generic placeholder image" width="220" height="220">
+            </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <h4 class="card-header">Apply for <strong th:text="${vacancy.name}"></strong></h4>
+                    <div class="alert alert-danger" role="alert" sec:authorize="isAnonymous()">
+                        ¿Are you interested in this Job? <strong>Register</strong> And then log in to submit your CV.
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Category: </strong> <span
+                                th:text="${vacancy.category.name}"></span></h5>
+                        <h6 class="card-title"><strong>Published: </strong> <span th:text="${#dates.format(vacancy.date, 'dd-MM-yyyy')}"> </span>
+                        </h6>
+                        <h6 class="card-title"><strong>Offered Salary  </strong><span
+                                th:text="${vacancy.salary}"></span></h6>
+                        <p th:text="${vacancy.description}" class="card-text"></p>
+
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Job Details</h5>
+                                <p class="card-text" th:utext="${vacancy.details}"></p>
+                            </div>
+                        </div>
+                        <a sec:authorize="isAuthenticated() and hasAnyAuthority('USUARIO')" class="btn btn-primary" th:href="@{/requests/create/{id} (id=${vacancy.id}) }" role="button"
+                           title="I want to apply for this job offer."><i class="fas fa-file"
+                                                                                  aria-hidden="true"></i> Apply</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<footer th:insert="~{fragments/footer :: 'pie-pagina'}" class="footer">
+
+</footer>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>
