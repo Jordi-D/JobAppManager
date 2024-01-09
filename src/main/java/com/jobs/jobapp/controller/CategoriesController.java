@@ -47,11 +47,11 @@ public class CategoriesController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String save(Category category, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            System.out.println("Existieron errores");
+            System.out.println("ERROR :");
             return "categories/formCategory";
         }
 
-        // Guadamos el objeto categoria en la bd
+        // Save object
         categoriesService.save(category);
         attributes.addFlashAttribute("msg", "The category data has been saved!");
         return "redirect:/categories/indexPaginate";
@@ -60,14 +60,14 @@ public class CategoriesController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") int idCategoria, Model model) {
         Category category = categoriesService.findById(idCategoria);
-        model.addAttribute("categories", category);
+        model.addAttribute("category", category);
         return "categories/formCategory";
 
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int idCategoria, RedirectAttributes attributes) {
-        categoriesService.delete(idCategoria);
+    public String delete(@PathVariable("id") int idCategory, RedirectAttributes attributes) {
+        categoriesService.delete(idCategory);
         attributes.addFlashAttribute("msg", "The category has been deleted!");
         return "redirect:/categories/indexPaginate";
     }

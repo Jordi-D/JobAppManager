@@ -57,20 +57,19 @@ public class HomeController {
         String pwdPlane = user.getPassword();
         String pwdEncripted = passwordEncoder.encode(pwdPlane);
 
-        user.setStatus(1); // Activado por defecto
-        user.setRegistrationDate(new Date()); // Fecha de Registro, la fecha actual del servidor
+        user.setStatus(1); // By default 1
+        user.setRegistrationDate(new Date());
         user.setPassword(pwdEncripted);
-        // Creamos el Perfil que le asignaremos al usuario nuevo
         Profile profile = new Profile();
-        profile.setId(3); // Perfil USUARIO
+        profile.setId(3); // Perfil USUARIO by default
         user.add(profile);
 
         /**
-         * Guardamos el usuario en la base de datos. El Perfil se guarda automaticamente
+         *Save the user in the database. The profile is saved automatically.
          */
         usersService.save(user);
 
-        attributes.addFlashAttribute("msg", "El registro fue guardado correctamente!");
+        attributes.addFlashAttribute("msg", "The record was saved successfully!");
 
         return "redirect:/users/index";
     }
@@ -142,12 +141,12 @@ public class HomeController {
 
     }
 
-    @GetMapping("/bcrypt/{texto}")
+/*    @GetMapping("/bcrypt/{texto}")
     @ResponseBody
     public String ecriptar(@PathVariable("texto") String texto) {
         return texto + " Encriptado en Bcrypt: " + passwordEncoder.encode(texto);
 
-    }
+    }*/
 
     @GetMapping("/login")
     public String showLogin() {

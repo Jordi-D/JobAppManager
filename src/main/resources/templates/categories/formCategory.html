@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
 
-    <title>JobApp | Category Creation</title>
+    <title>JobApp | Category Edit</title>
     <!-- Bootstrap core CSS -->
     <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -30,7 +30,7 @@
                     <div th:if="${#fields.hasErrors('*')}" class='alert alert-danger' role='alert'>
                         Please correct the following errors:
                         <ul>
-                            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"/>
+                            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
                         </ul>
                     </div>
                     <div class="row">
@@ -39,7 +39,8 @@
                                 <label for="name">Name</label>
                                 <input type="hidden" th:field="*{id}">
                                 <input type="text" class="form-control" id="name" name="name"
-                                       placeholder="Write the name of the category" required="required">
+                                       placeholder="Write the name of the category" required="required"
+                                       th:value="${category.name}">
                             </div>
                         </div>
                     </div>
@@ -47,7 +48,8 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="description">Description</label>
-                                <textarea class="form-control" name="description" id="description" rows="2"></textarea>
+                                <textarea class="form-control" name="description" id="description" rows="2"
+                                          th:text="${category.description}"></textarea>
                             </div>
                         </div>
                     </div>
@@ -62,8 +64,7 @@
 
 <footer th:insert="~{fragments/footer :: 'pie-pagina'}" class="footer"></footer>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
+<!-- Bootstrap core JavaScript -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>

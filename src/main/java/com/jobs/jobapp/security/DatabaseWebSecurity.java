@@ -41,7 +41,7 @@ public class DatabaseWebSecurity {
                 //No identificacion
                 .requestMatchers("/bootstrap/**", "images/**", "tinymce/**", "/logos/**").permitAll()
                 //No Identificacion
-                .requestMatchers("/", "signup", "/search", "/vacantes/view/**","/bcrypt/**").permitAll()
+                .requestMatchers("/", "signup", "/search", "/vacancies/view/**","/bcrypt/**").permitAll()
                 //URL POR ROLES
                 .requestMatchers("/requests/create/**").hasAnyAuthority("USUARIO")
                 .requestMatchers("/requests/save").hasAnyAuthority("USUARIO")
