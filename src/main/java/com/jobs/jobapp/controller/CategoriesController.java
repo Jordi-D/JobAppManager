@@ -11,8 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -21,55 +21,55 @@ import java.util.List;
 @RequestMapping(value = "/categories")
 public class CategoriesController {
 
+    private final ICategoriesService categoriesService;
+
     @Autowired
-    private ICategoriesService categoriesService;
+    public CategoriesController(ICategoriesService categoriesService) {
+        this.categoriesService = categoriesService;
+    }
 
-
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
-    public String showIndex(Model model) {
-        List<Category> list = categoriesService.findAll();
-        model.addAttribute("categories", list);
+    @GetMapping("/index")
+    public String showAllCategories(Model model) {
+        List<Category> categories = categoriesService.findAll();
+        model.addAttribute("categories", categories);
         return "categories/listCategories";
     }
 
-    @GetMapping(value = "/indexPaginate")
-    public String showPaginatedIndex(Model model, Pageable page) {
-        Page<Category> list = categoriesService.findAll(page);
-        model.addAttribute("categories", list);
+    @GetMapping("/indexPaginate")
+    public String showPaginatedCategories(Model model, Pageable pageable) {
+        Page<Category> categories = categoriesService.findAll(pageable);
+        model.addAttribute("categories", categories);
         return "categories/listCategories";
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String create(Category category) {
+    @GetMapping("/create")
+    public String showCreateCategoryForm(Category category) {
         return "categories/formCategory";
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(Category category, BindingResult result, RedirectAttributes attributes) {
+    @PostMapping("/save")
+    public String saveCategory(Category category, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors()) {
             System.out.println("ERROR :");
             return "categories/formCategory";
         }
 
-        // Save object
         categoriesService.save(category);
         attributes.addFlashAttribute("msg", "The category data has been saved!");
         return "redirect:/categories/indexPaginate";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") int idCategoria, Model model) {
-        Category category = categoriesService.findById(idCategoria);
+    public String editCategory(@PathVariable("id") int categoryId, Model model) {
+        Category category = categoriesService.findById(categoryId);
         model.addAttribute("category", category);
         return "categories/formCategory";
-
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int idCategory, RedirectAttributes attributes) {
-        categoriesService.delete(idCategory);
+    public String deleteCategory(@PathVariable("id") int categoryId, RedirectAttributes attributes) {
+        categoriesService.delete(categoryId);
         attributes.addFlashAttribute("msg", "The category has been deleted!");
         return "redirect:/categories/indexPaginate";
     }
-
 }

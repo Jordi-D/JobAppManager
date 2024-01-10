@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,99 +20,89 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 @Controller
 @RequestMapping("/vacancies")
 public class VacanciesController {
-    @Value("${jobs.route.images}")
-    private String route;
-    @Autowired
-    private IVacanciesService vacanciesService;
-    @Autowired
-    private ICategoriesService categoriesService;
+    private final String route;
+    private final IVacanciesService vacanciesService;
+    private final ICategoriesService categoriesService;
 
+    @Autowired
+    public VacanciesController(@Value("${jobs.route.images}") String route,
+                               IVacanciesService vacanciesService,
+                               ICategoriesService categoriesService) {
+        this.route = route;
+        this.vacanciesService = vacanciesService;
+        this.categoriesService = categoriesService;
+    }
 
     @GetMapping("/index")
     public String showIndex(Model model) {
-        List<Vacancy> list = vacanciesService.findAll();
-        model.addAttribute("vacancies", list);
+        List<Vacancy> vacancyList = vacanciesService.findAll();
+        model.addAttribute("vacancies", vacancyList);
         return "vacancies/listVacancies";
     }
 
-    @GetMapping(value = "/indexPaginate")
+    @GetMapping("/indexPaginate")
     public String showIndexPaginated(Model model, Pageable page) {
-        Page<Vacancy> list = vacanciesService.findAll(page);
-        model.addAttribute("vacancies", list);
+        Page<Vacancy> vacancyPage = vacanciesService.findAll(page);
+        model.addAttribute("vacancies", vacancyPage);
         return "vacancies/listVacancies";
     }
 
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") int idVacancy, Model model) {
+    public String editVacancy(@PathVariable("id") int idVacancy, Model model) {
         Vacancy vacancy = vacanciesService.findById(idVacancy);
         model.addAttribute("vacancy", vacancy);
         return "vacancies/formVacancy";
-
     }
 
     @GetMapping("/create")
-    public String create(Vacancy vacancy, Model model) {
+    public String createVacancy(Vacancy vacancy, Model model) {
         return "vacancies/formVacancy";
     }
 
     @PostMapping("/save")
-    public String save(@RequestParam("fileImg") MultipartFile multiPart,
-                          Vacancy vacancy, BindingResult result, RedirectAttributes attributes) {
+    public String saveVacancy(@RequestParam("fileImg") MultipartFile multipartFile,
+                              Vacancy vacancy, BindingResult result, RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            for (ObjectError error : result.getAllErrors()) {
-                System.out.println("Ocurrio un error: " + error.getDefaultMessage());
-            }
+            result.getAllErrors().forEach(error -> System.out.println("Error occurred: " + error.getDefaultMessage()));
             return "vacancies/formVacancy";
         }
-        if (!multiPart.isEmpty()) {
-/*            String ruta = "img-vacantes/"; // Ruta relativa a la carpeta "empleos"
-            String directorioActual = System.getProperty("user.dir");
-            String rutaCompleta = directorioActual + "/" + ruta;*/
 
-            String nameImg = Utility.saveFile(multiPart, route);
-
+        if (!multipartFile.isEmpty()) {
+            String nameImg = Utility.saveFile(multipartFile, route);
             if (nameImg != null) {
                 vacancy.setImage(nameImg);
             }
         }
 
-
         vacanciesService.save(vacancy);
-        attributes.addFlashAttribute("msg", "Registro Guardado");
-        System.out.println("Vacante : " + vacancy);
+        attributes.addFlashAttribute("msg", "Record Saved");
+        System.out.println("Vacancy: " + vacancy);
         return "redirect:/vacancies/indexPaginate";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int idVacancy, RedirectAttributes attributes) {
-        System.out.println("Borrando vacante con id: " + idVacancy);
+    public String deleteVacancy(@PathVariable("id") int idVacancy, RedirectAttributes attributes) {
+        System.out.println("Deleting vacancy with id: " + idVacancy);
         vacanciesService.delete(idVacancy);
-        attributes.addFlashAttribute("msg", "La vacante fue eliminada!");
+        attributes.addFlashAttribute("msg", "The vacancy has been deleted!");
         return "redirect:/vacancies/indexPaginate";
     }
 
     @GetMapping("/view/{id}")
     public String viewDetail(@PathVariable("id") int idVacancy, Model model) {
-
         Vacancy vacancy = vacanciesService.findById(idVacancy);
-
-        System.out.println("Vacante: " + vacancy);
-        vacancy.getDescription();
+        System.out.println("Vacancy: " + vacancy);
         model.addAttribute("vacancy", vacancy);
-
-        // Buscar los detalles de la vacante en la BD...
         return "detail";
     }
 
     @ModelAttribute
-    public void setGenerics(Model model) {
+    public void setCategories(Model model) {
         model.addAttribute("categories", categoriesService.findAll());
     }
-
 
     @InitBinder
     public void initBinder(WebDataBinder webDataBinder) {

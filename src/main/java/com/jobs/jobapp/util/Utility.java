@@ -7,14 +7,14 @@ import java.io.IOException;
 
 public class Utility {
     public static String saveFile(MultipartFile multiPart, String route) {
-        // Obtenemos el nombre original del archivo.
+        // Get the original file name.
         String originalName = multiPart.getOriginalFilename();
 
         try {
-            // Formamos el nombre del archivo para guardarlo en el disco duro.
+            // Construct the file name to store it on the hard drive.
             File imageFile = new File(route + originalName);
             System.out.println("File: " + imageFile.getAbsolutePath());
-            //Guardamos fisicamente el archivo en HD.
+            // Physically save the file on the hard drive.
             multiPart.transferTo(imageFile);
 
             return originalName;

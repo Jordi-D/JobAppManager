@@ -25,59 +25,62 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class RequestsController {
     @Value("${jobs.route.cv}")
     private String routeCv;
+
+    private final IVacanciesService vacanciesService;
+    private final IUsersService usersService;
+    private final IRequestsService requestsService;
+
     @Autowired
-    private IVacanciesService iVacanciesService;
-    @Autowired
-    private IUsersService iUsersService;
-    @Autowired
-    private IRequestsService iRequestsService;
+    public RequestsController(IVacanciesService vacanciesService, IUsersService usersService, IRequestsService requestsService) {
+        this.vacanciesService = vacanciesService;
+        this.usersService = usersService;
+        this.requestsService = requestsService;
+    }
 
     @GetMapping("/indexPaginate")
-    private String showIndexPaginated(Model model, Pageable page) {
-        Page<Request> list = iRequestsService.findAll(page);
-        model.addAttribute("requests", list);
+    public String showIndexPaginated(Model model, Pageable page) {
+        Page<Request> requestPage = requestsService.findAll(page);
+        model.addAttribute("requests", requestPage);
         return "requests/listRequests";
     }
 
     @GetMapping("/create/{idVacancy}")
-    public String create(Request request, @PathVariable("idVacancy") Integer idVacancy, Model model) {
-        Vacancy vacancy = iVacanciesService.findById(idVacancy);
+    public String createRequestForm(Request request, @PathVariable("idVacancy") Integer idVacancy, Model model) {
+        Vacancy vacancy = vacanciesService.findById(idVacancy);
         model.addAttribute("vacancy", vacancy);
         return "requests/formRequest";
-
     }
 
     @PostMapping("/save")
-    public String save(Request request, BindingResult bindingResult,
-                          @RequestParam("fileCv") MultipartFile multipartFile,
-                          Authentication authentication, RedirectAttributes attributes) {
-
-        String username = authentication.getName();
+    public String saveRequest(Request request, BindingResult bindingResult,
+                              @RequestParam("fileCv") MultipartFile multipartFile,
+                              Authentication authentication, RedirectAttributes attributes) {
 
         if (bindingResult.hasErrors()) {
-            System.out.println("ERRORES ERRORREES");
             return "requests/formRequest";
         }
 
         if (!multipartFile.isEmpty()) {
-            String nameFile = Utility.saveFile(multipartFile, routeCv);
-            if (nameFile != null) {
-                request.setFile(nameFile);
+            String fileName = Utility.saveFile(multipartFile, routeCv);
+            if (fileName != null) {
+                request.setFile(fileName);
             }
         }
-        User user = iUsersService.findByUsername(username);
+
+        String username = authentication.getName();
+        User user = usersService.findByUsername(username);
         request.setUser(user);
 
-        iRequestsService.save(request);
+        requestsService.save(request);
         attributes.addFlashAttribute("msg", "Thank you for applying to the job vacancy!");
-        System.out.println("Request " + request);
+
         return "redirect:/";
     }
+
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer idRequest,RedirectAttributes attributes){
-        iRequestsService.delete(idRequest);
+    public String deleteRequest(@PathVariable("id") Integer idRequest, RedirectAttributes attributes) {
+        requestsService.delete(idRequest);
         attributes.addFlashAttribute("msg", "Request deleted!");
         return "redirect:/requests/indexPaginate";
-
     }
 }

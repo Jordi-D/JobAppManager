@@ -29,17 +29,20 @@ import java.util.List;
 
 @Controller
 public class HomeController {
-    @Autowired
-    private IVacanciesService vacanciesService;
-    @Autowired
-    private ICategoriesService categoriesService;
 
-
-    @Autowired
-    private IUsersService usersService;
+    private final IVacanciesService vacanciesService;
+    private final ICategoriesService categoriesService;
+    private final IUsersService usersService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    public HomeController(IVacanciesService vacanciesService, ICategoriesService categoriesService,
+                          IUsersService usersService, PasswordEncoder passwordEncoder) {
+        this.vacanciesService = vacanciesService;
+        this.categoriesService = categoriesService;
+        this.usersService = usersService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("/")
     public String showHome(Model model) {
@@ -53,22 +56,18 @@ public class HomeController {
 
     @PostMapping("/signup")
     public String saveRecord(User user, RedirectAttributes attributes) {
+        String pwdPlain = user.getPassword();
+        String pwdEncrypted = passwordEncoder.encode(pwdPlain);
 
-        String pwdPlane = user.getPassword();
-        String pwdEncripted = passwordEncoder.encode(pwdPlane);
-
-        user.setStatus(1); // By default 1
+        user.setStatus(1);
         user.setRegistrationDate(new Date());
-        user.setPassword(pwdEncripted);
+        user.setPassword(pwdEncrypted);
+
         Profile profile = new Profile();
-        profile.setId(3); // Perfil USUARIO by default
+        profile.setId(3);
         user.add(profile);
 
-        /**
-         *Save the user in the database. The profile is saved automatically.
-         */
         usersService.save(user);
-
         attributes.addFlashAttribute("msg", "The record was saved successfully!");
 
         return "redirect:/users/index";
@@ -78,46 +77,15 @@ public class HomeController {
     public String showTable(Model model) {
         List<Vacancy> list = vacanciesService.findAll();
         model.addAttribute("vacancies", list);
-
         return "table";
-    }
-
-    @GetMapping("/detail")
-    public String showDetail(Model model) {
-        Vacancy vacancy = new Vacancy();
-        vacancy.setName("Ingeniero de comunicaciones");
-        vacancy.setDescription("Se solicita ingeniero para dar soporte a intranet");
-        vacancy.setDate(new Date());
-        vacancy.setSalary(9700.0);
-        model.addAttribute("vacancy", vacancy);
-        return "detail";
-    }
-
-    @GetMapping("/list")
-    public String showList(Model model) {
-        List<String> list = new LinkedList<String>();
-        list.add("Ingeniero  de Sistemas");
-        list.add("Auxiliar de Contabilidad");
-        list.add("Vendedor");
-        list.add("Arquitecto");
-
-        model.addAttribute("vacancies", list);
-
-        return "list";
     }
 
     @GetMapping("/search")
     public String search(@ModelAttribute("search") Vacancy vacancy, Model model) {
-        System.out.println("Buscando " + vacancy);
-
-        //Filtros
-        // where descripcion like '?'
         ExampleMatcher matcher = ExampleMatcher.matching().withMatcher("description", ExampleMatcher.GenericPropertyMatchers.contains()).withIgnorePaths("salary");
-
         Example<Vacancy> example = Example.of(vacancy, matcher);
         List<Vacancy> list = vacanciesService.findByExample(example);
         model.addAttribute("vacancies", list);
-
         return "home";
     }
 
@@ -126,27 +94,14 @@ public class HomeController {
         String username = auth.getName();
         System.out.println("Nombre user : " + username);
 
-        for (GrantedAuthority rol : auth.getAuthorities()) {
-            System.out.println("rol: " + rol.getAuthority());
-        }
-
         if (session.getAttribute("user") == null) {
             User user = usersService.findByUsername(username);
             user.setPassword(null);
             System.out.println("usuario = " + user);
             session.setAttribute("usuario", user);
-            return "redirect:/";
         }
         return "redirect:/";
-
     }
-
-/*    @GetMapping("/bcrypt/{texto}")
-    @ResponseBody
-    public String ecriptar(@PathVariable("texto") String texto) {
-        return texto + " Encriptado en Bcrypt: " + passwordEncoder.encode(texto);
-
-    }*/
 
     @GetMapping("/login")
     public String showLogin() {
@@ -155,14 +110,12 @@ public class HomeController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
-        SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-        logoutHandler.logout(request, null, null);
+        new SecurityContextLogoutHandler().logout(request, null, null);
         return "redirect:/login";
     }
 
-
     @InitBinder
-    public void initBinde(WebDataBinder binder) {
+    public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
@@ -174,5 +127,5 @@ public class HomeController {
         model.addAttribute("categories", categoriesService.findAll());
         model.addAttribute("search", vacancySearch);
     }
-
 }
+

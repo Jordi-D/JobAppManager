@@ -17,23 +17,26 @@ import java.util.List;
 @RequestMapping("/users")
 public class UsersController {
 
+    private final PasswordEncoder passwordEncoder;
+    private final IUsersService usersService;
+
     @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private IUsersService usersService;
+    public UsersController(PasswordEncoder passwordEncoder, IUsersService usersService) {
+        this.passwordEncoder = passwordEncoder;
+        this.usersService = usersService;
+    }
 
     @GetMapping("/index")
     public String showIndex(Model model) {
-        List<User> list = usersService.findAll();
-        model.addAttribute("users", list);
+        List<User> userList = usersService.findAll();
+        model.addAttribute("users", userList);
         return "users/listUsers";
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") int idUser, RedirectAttributes attributes) {
-        // Eliminamos el usuario
-        usersService.delete(idUser);
-        attributes.addFlashAttribute("msg", "El usuario fue eliminado!.");
+    public String deleteUser(@PathVariable("id") int userId, RedirectAttributes attributes) {
+        usersService.delete(userId);
+        attributes.addFlashAttribute("msg", "The user has been deleted.");
         return "redirect:/users/index";
     }
 }

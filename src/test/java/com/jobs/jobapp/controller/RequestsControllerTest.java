@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.Authentication;
@@ -20,10 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Collections;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 public class RequestsControllerTest {
@@ -63,7 +59,7 @@ public class RequestsControllerTest {
         Vacancy vacancy = new Vacancy();
         when(iVacanciesService.findById(idVacancy)).thenReturn(vacancy);
 
-        String result = requestsController.create(new Request(), idVacancy, model);
+        String result = requestsController.createRequestForm(new Request(), idVacancy, model);
 
         assertEquals("requests/formRequest", result);
         verify(model).addAttribute("vacancy", vacancy);
@@ -77,7 +73,7 @@ public class RequestsControllerTest {
         when(authentication.getName()).thenReturn("testUser");
         when(iUsersService.findByUsername("testUser")).thenReturn(new User());
 
-        String result = requestsController.save(request, mock(BindingResult.class), mockMultipartFile, authentication, redirectAttributes);
+        String result = requestsController.saveRequest(request, mock(BindingResult.class), mockMultipartFile, authentication, redirectAttributes);
 
         assertEquals("redirect:/", result);
         verify(iRequestsService).save(request);
@@ -88,12 +84,13 @@ public class RequestsControllerTest {
     void testDelete() {
         Integer idRequest = 1;
 
-        String result = requestsController.delete(idRequest, redirectAttributes);
+        String result = requestsController.deleteRequest(idRequest, redirectAttributes);
 
         assertEquals("redirect:/requests/indexPaginate", result);
         verify(iRequestsService).delete(idRequest);
         verify(redirectAttributes).addFlashAttribute("msg", "Request deleted!");
     }
+
     @Test
     void testCreate_Unsuccessful() {
         // Setup
@@ -105,13 +102,12 @@ public class RequestsControllerTest {
         when(iVacanciesService.findById(idVacancy)).thenReturn(null);
 
         // Execution
-        String result = requestsController.create(request, idVacancy, model);
+        String result = requestsController.createRequestForm(request, idVacancy, model);
 
         // Assertion
         assertEquals("requests/formRequest", result); // Expecting the specific view name or response string
         // You might need to adjust the expected result based on the controller's behavior
     }
-
 
 
     @Test
@@ -125,7 +121,7 @@ public class RequestsControllerTest {
         BindingResult mockBindingResult = mock(BindingResult.class);
         when(mockBindingResult.hasErrors()).thenReturn(true);
 
-        String result = requestsController.save(request, mockBindingResult, mockMultipartFile, authentication, redirectAttributes);
+        String result = requestsController.saveRequest(request, mockBindingResult, mockMultipartFile, authentication, redirectAttributes);
 
         assertEquals("requests/formRequest", result); // Adjust this according to your application's behavior in case of failure
         verify(iRequestsService, never()).save(request);
@@ -138,7 +134,7 @@ public class RequestsControllerTest {
         Integer idRequest = 1;
 
         // Act
-        String result = requestsController.delete(idRequest, redirectAttributes);
+        String result = requestsController.deleteRequest(idRequest, redirectAttributes);
 
         // Assert
         assertEquals("redirect:/requests/indexPaginate", result); // This line fails intentionally

@@ -9,10 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -93,35 +91,6 @@ public class HomeControllerTest {
         verify(mockAttributes, never()).addFlashAttribute("msg", "The record was saved successfully!");
     }
 
-    @Test
-    void testLogout() {
-        HomeController homeController = new HomeController();
-        SecurityContextLogoutHandler mockLogoutHandler = mock(SecurityContextLogoutHandler.class);
-
-        // Simulating the HttpServletRequest
-        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-
-        // Executing the logout method directly from the LogoutHandler
-        mockLogoutHandler.logout(mockRequest, null, null);
-
-        // Verifying that the logout method of the logoutHandler is called and returns the expected redirection
-        verify(mockLogoutHandler, times(1)).logout(mockRequest, null, null);
-    }
-
-    @Test
-    void testUnsuccessfulLogout() {
-        HomeController homeController = new HomeController();
-        SecurityContextLogoutHandler mockLogoutHandler = mock(SecurityContextLogoutHandler.class);
-
-        // Simulating the HttpServletRequest
-        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-
-        // Executing the logout method directly from the LogoutHandler
-        mockLogoutHandler.logout(mockRequest, null, null);
-
-        // Verifying that the logout method of the logoutHandler is called and returns the expected redirection
-        verify(mockLogoutHandler, times(1)).logout(mockRequest, null, null);
-    }
 
     // More unit tests...
 }
