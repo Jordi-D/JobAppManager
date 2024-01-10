@@ -21,7 +21,7 @@ The application utilizes the Java Spring Boot development framework, leveraging 
 
 ##Screenshots
 This is the home page of the website, featuring elements like Sign In and Register for users. The FEATURED section displays approved and highlighted job offers within the app. Each job offer includes details that can be created and edited later. A specific image is shown below.
-![Home Image](/src/main/resources/static/images_readme/home.png)
+![Home Image](jobapp 2/src/main/resources/static/images_readme/home.png)
 
 The search bar allows users to filter by categories or enter a description for the desired job offer.
 ![Finder](/src/main/resources/static/images_readme/finder.png)
