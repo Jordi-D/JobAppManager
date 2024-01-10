@@ -21,37 +21,37 @@ The application utilizes the Java Spring Boot development framework, leveraging 
 
 ##Screenshots
 This is the home page of the website, featuring elements like Sign In and Register for users. The FEATURED section displays approved and highlighted job offers within the app. Each job offer includes details that can be created and edited later. A specific image is shown below.
-![home](jobapp%202/src/main/resources/static/images_readme/home.png)
+![home](src/main/resources/static/images_readme/home.png)
 
 The search bar allows users to filter by categories or enter a description for the desired job offer.
-![Finder](/src/main/resources/static/images_readme/finder.png)
+![Finder](src/main/resources/static/images_readme/finder.png)
 
 App login page.
-![Login](/src/main/resources/static/images_readme/login.png)
+![Login](src/main/resources/static/images_readme/login.png)
 
 App registration page. The app has three different roles, and by default, users register as candidates. This role can only apply for job offers, while the supervisor can create job offers, categories, and view applicant requests.
-![Register](/src/main/resources/static/images_readme/register.png)
+![Register](src/main/resources/static/images_readme/register.png)
 
 This is the menu for an administrator. The difference from the supervisor is that the admin has access to users and their control.
-![AdminMenu](/src/main/resources/static/images_readme/adminMenu.png)
+![AdminMenu](src/main/resources/static/images_readme/adminMenu.png)
 
 Requests page where you can download the candidate's CV and delete the request if you don't want to continue with their application.
-![Requests](/src/main/resources/static/images_readme/requests.png)
+![Requests](src/main/resources/static/images_readme/requests.png)
 
 Vacancy management page.
-![VacList](/src/main/resources/static/images_readme/vacancyList.png)
+![VacList](src/main/resources/static/images_readme/vacancyList.png)
 
 Job creation page.
-![CreateVac](/src/main/resources/static/images_readme/newJob.png)
+![CreateVac](src/main/resources/static/images_readme/newJob.png)
 
 Category management page.
-![CatList](/src/main/resources/static/images_readme/categoryList.png)
+![CatList](src/main/resources/static/images_readme/categoryList.png)
 
 Category creation page.
-![CreateCategory](/src/main/resources/static/images_readme/newCategory.png)
+![CreateCategory](src/main/resources/static/images_readme/newCategory.png)
 
 User management page.
-![Userslist](/src/main/resources/static/images_readme/userList.png)
+![Userslist](src/main/resources/static/images_readme/userList.png)
 
 ## Installation
 Below are the steps to set up and run the project on your local environment.
@@ -72,9 +72,9 @@ Below are the steps to set up and run the project on your local environment.
 2.**Configure the Database:**
 
 Install MySQL 8.0 and create a database named "jobs." Use PHPMyAdmin to manage the database. Update the database properties in src/main/resources/application.properties.
-
+~~~~
 Ensure your database follows the structure shown in the image below.
-![SQL](/src/main/resources/static/images_readme/SQL.jpeg)
+![SQL](src/main/resources/static/images_readme/SQL.jpeg)
 
 3.**Configure Apache HTTP Server:**
 
