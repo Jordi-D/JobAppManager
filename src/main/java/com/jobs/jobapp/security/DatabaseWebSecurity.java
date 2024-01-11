@@ -36,20 +36,20 @@ public class DatabaseWebSecurity {
     //metodo para dar acceso a urls
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
+        String[] roles = {"USUARIO", "SUPERVISOR", "ADMINISTRADOR"};
         http.authorizeHttpRequests(authorize -> authorize
                 //No identificacion
                 .requestMatchers("/bootstrap/**", "images/**", "tinymce/**", "/logos/**").permitAll()
                 //No Identificacion
                 .requestMatchers("/", "signup", "/search", "/vacancies/view/**","/bcrypt/**").permitAll()
                 //URL POR ROLES
-                .requestMatchers("/requests/create/**").hasAnyAuthority("USUARIO")
-                .requestMatchers("/requests/save").hasAnyAuthority("USUARIO")
-                .requestMatchers("/vacancies/view/**").hasAnyAuthority("USUARIO")
-                .requestMatchers("/requests/**").hasAnyAuthority("SUPERVISOR","ADMINISTRADOR")
-                .requestMatchers("/vacancies/**").hasAnyAuthority("SUPERVISOR", "ADMINISTRADOR")
-                .requestMatchers("/categories/**").hasAnyAuthority("SUPERVISOR", "ADMINISTRADOR")
-                .requestMatchers("/users/**").hasAnyAuthority("ADMINISTRADOR")
+                .requestMatchers("/requests/create/**").hasAnyAuthority(roles[0])
+                .requestMatchers("/requests/save").hasAnyAuthority(roles[0])
+                .requestMatchers("/vacancies/view/**").hasAnyAuthority(roles[0])
+                .requestMatchers("/requests/**").hasAnyAuthority(roles[1],roles[2])
+                .requestMatchers("/vacancies/**").hasAnyAuthority(roles[1], roles[2])
+                .requestMatchers("/categories/**").hasAnyAuthority(roles[1], roles[2])
+                .requestMatchers("/users/**").hasAnyAuthority(roles[2])
 
                 //Otras urls requieren aut
                 .anyRequest().authenticated()
