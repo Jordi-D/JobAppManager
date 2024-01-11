@@ -72,7 +72,6 @@ Below are the steps to set up and run the project on your local environment.
 2.**Configure the Database:**
 
 Install MySQL 8.0 and create a database named "jobs." Use PHPMyAdmin to manage the database. Update the database properties in src/main/resources/application.properties.
-~~~~
 Ensure your database follows the structure shown in the image below.
 ![SQL](src/main/resources/static/images_readme/SQL.jpeg)
 
