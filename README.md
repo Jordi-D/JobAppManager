@@ -66,8 +66,7 @@ Below are the steps to set up and run the project on your local environment.
 
 
 1. **Clone the Repository:**
-   git clone https://github.com/tu-usuario/tu-proyecto.git
-   cd tu-proyecto
+   git clone https://github.com/Jordi-D/portfolio-jordi
 
 2.**Configure the Database:**
 
