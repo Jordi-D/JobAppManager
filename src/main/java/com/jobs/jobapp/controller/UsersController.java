@@ -2,6 +2,7 @@ package com.jobs.jobapp.controller;
 
 import com.jobs.jobapp.model.User;
 import com.jobs.jobapp.service.IUsersService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,7 @@ public class UsersController {
         this.usersService = usersService;
     }
 
+    @Operation(summary = "Show list of users")
     @GetMapping("/index")
     public String showIndex(Model model) {
         List<User> userList = usersService.findAll();
@@ -33,6 +35,7 @@ public class UsersController {
         return "users/listUsers";
     }
 
+    @Operation(summary = "Delete a user by ID")
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable("id") int userId, RedirectAttributes attributes) {
         usersService.delete(userId);

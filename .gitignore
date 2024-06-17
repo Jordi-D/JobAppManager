@@ -4,7 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+application.properties
+
+### STS ###a
 .apt_generated
 .classpath
 .factorypath

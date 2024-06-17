@@ -4,6 +4,7 @@ import com.jobs.jobapp.model.Vacancy;
 import com.jobs.jobapp.service.ICategoriesService;
 import com.jobs.jobapp.service.IVacanciesService;
 import com.jobs.jobapp.util.Utility;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -20,9 +21,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 @Controller
 @RequestMapping("/vacancies")
 public class VacanciesController {
+
     private final String route;
     private final IVacanciesService vacanciesService;
     private final ICategoriesService categoriesService;
@@ -36,6 +39,7 @@ public class VacanciesController {
         this.categoriesService = categoriesService;
     }
 
+    @Operation(summary = "Show all vacancies")
     @GetMapping("/index")
     public String showIndex(Model model) {
         List<Vacancy> vacancyList = vacanciesService.findAll();
@@ -43,6 +47,7 @@ public class VacanciesController {
         return "vacancies/listVacancies";
     }
 
+    @Operation(summary = "Show paginated list of vacancies")
     @GetMapping("/indexPaginate")
     public String showIndexPaginated(Model model, Pageable page) {
         Page<Vacancy> vacancyPage = vacanciesService.findAll(page);
@@ -50,6 +55,7 @@ public class VacanciesController {
         return "vacancies/listVacancies";
     }
 
+    @Operation(summary = "Edit a vacancy by ID")
     @GetMapping("/edit/{id}")
     public String editVacancy(@PathVariable("id") int idVacancy, Model model) {
         Vacancy vacancy = vacanciesService.findById(idVacancy);
@@ -57,11 +63,13 @@ public class VacanciesController {
         return "vacancies/formVacancy";
     }
 
+    @Operation(summary = "Show form to create a new vacancy")
     @GetMapping("/create")
     public String createVacancy(Vacancy vacancy, Model model) {
         return "vacancies/formVacancy";
     }
 
+    @Operation(summary = "Save a new or updated vacancy")
     @PostMapping("/save")
     public String saveVacancy(@RequestParam("fileImg") MultipartFile multipartFile,
                               Vacancy vacancy, BindingResult result, RedirectAttributes attributes) {
@@ -83,6 +91,7 @@ public class VacanciesController {
         return "redirect:/vacancies/indexPaginate";
     }
 
+    @Operation(summary = "Delete a vacancy by ID")
     @GetMapping("/delete/{id}")
     public String deleteVacancy(@PathVariable("id") int idVacancy, RedirectAttributes attributes) {
         System.out.println("Deleting vacancy with id: " + idVacancy);
@@ -91,6 +100,7 @@ public class VacanciesController {
         return "redirect:/vacancies/indexPaginate";
     }
 
+    @Operation(summary = "View details of a vacancy by ID")
     @GetMapping("/view/{id}")
     public String viewDetail(@PathVariable("id") int idVacancy, Model model) {
         Vacancy vacancy = vacanciesService.findById(idVacancy);
