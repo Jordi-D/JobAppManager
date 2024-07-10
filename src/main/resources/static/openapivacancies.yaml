@@ -1,0 +1,180 @@
+openapi: 3.0.0
+info:
+  title: Job Application API - VacanciesController
+  description: API endpoints for managing job vacancies.
+  version: 1.0.0
+
+paths:
+  /vacancies/index:
+    get:
+      summary: Retrieve all vacancies
+      operationId: showIndex
+      responses:
+        '200':
+          description: List of vacancies retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vacancy'
+
+  /vacancies/indexPaginate:
+    get:
+      summary: Retrieve paginated list of vacancies
+      operationId: showIndexPaginated
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+          description: Page number (default is 0)
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+          description: Page size (default is 20)
+      responses:
+        '200':
+          description: Paginated list of vacancies retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vacancy'
+
+  /vacancies/edit/{id}:
+    get:
+      summary: Retrieve a vacancy by ID for editing
+      operationId: editVacancy
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the vacancy to retrieve for editing
+      responses:
+        '200':
+          description: Vacancy retrieved successfully for editing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vacancy'
+
+  /vacancies/create:
+    get:
+      summary: Show form to create a new vacancy
+      operationId: createVacancy
+      responses:
+        '200':
+          description: Form to create new vacancy displayed successfully
+
+    post:
+      summary: Create or update a vacancy
+      operationId: saveVacancy
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileImg:
+                  type: string
+                  format: binary
+                  description: Image file for the vacancy
+                title:
+                  type: string
+                  description: Title of the vacancy
+                description:
+                  type: string
+                  description: Description of the vacancy
+                category:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: ID of the category for the vacancy
+                  description: Category object for the vacancy
+                expirationDate:
+                  type: string
+                  format: date
+                  description: Expiration date of the vacancy (YYYY-MM-DD)
+      responses:
+        '302':
+          description: Vacancy created or updated successfully and redirected to vacancy list
+
+  /vacancies/delete/{id}:
+    get:
+      summary: Delete a vacancy by ID
+      operationId: deleteVacancy
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the vacancy to delete
+      responses:
+        '302':
+          description: Vacancy deleted successfully and redirected to vacancy list
+
+  /vacancies/view/{id}:
+    get:
+      summary: Retrieve details of a vacancy by ID
+      operationId: viewDetail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the vacancy to retrieve details
+      responses:
+        '200':
+          description: Vacancy details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vacancy'
+
+components:
+  schemas:
+    Vacancy:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the vacancy
+        title:
+          type: string
+          description: Title of the vacancy
+        description:
+          type: string
+          description: Description of the vacancy
+        image:
+          type: string
+          description: Filename of the image associated with the vacancy
+        category:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: ID of the category associated with the vacancy
+            name:
+              type: string
+              description: Name of the category associated with the vacancy
+          description: Category object associated with the vacancy
+        expirationDate:
+          type: string
+          format: date
+          description: Expiration date of the vacancy (YYYY-MM-DD)
+      required:
+        - title
+        - description
+        - category
+        - expirationDate

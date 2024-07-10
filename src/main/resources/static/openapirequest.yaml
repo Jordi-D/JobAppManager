@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  title: Job Application API - RequestsController
+  description: API endpoints for managing job requests.
+  version: 1.0.0
+
+paths:
+  /requests/indexPaginate:
+    get:
+      summary: Retrieve paginated list of requests
+      operationId: showIndexPaginated
+      responses:
+        '200':
+          description: Paginated list of requests retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Request'
+
+  /requests/create/{idVacancy}:
+    get:
+      summary: Show form to create a request for a specific vacancy
+      operationId: createRequestForm
+      parameters:
+        - name: idVacancy
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the vacancy for which request is being created
+      responses:
+        '200':
+          description: Form to create request displayed successfully
+
+    post:
+      summary: Create a new request
+      operationId: saveRequest
+      parameters:
+        - name: idVacancy
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the vacancy for which request is being created
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileCv:
+                  type: string
+                  format: binary
+                  description: CV file uploaded by the user
+                otherField:
+                  type: string
+                  description: Any other field related to the request
+      responses:
+        '302':
+          description: Request created successfully and redirected to home page
+
+  /requests/delete/{id}:
+    get:
+      summary: Delete a request by ID
+      operationId: deleteRequest
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the request to delete
+      responses:
+        '302':
+          description: Request deleted successfully and redirected to paginated list
+
+components:
+  schemas:
+    Request:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the request
+        user:
+          $ref: '#/components/schemas/User'
+        vacancy:
+          $ref: '#/components/schemas/Vacancy'
+        file:
+          type: string
+          description: File name of the CV uploaded by the user
+      required:
+        - user
+        - vacancy
+
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username of the user
+      required:
+        - username
+
+    Vacancy:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the vacancy
+      required:
+        - id

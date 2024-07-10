@@ -1,0 +1,117 @@
+openapi: 3.0.0
+info:
+  title: Job Application API - HomeController
+  description: API endpoints for managing vacancies and user operations.
+  version: 1.0.0
+
+paths:
+  /:
+    get:
+      summary: Show home page
+      operationId: showHome
+      responses:
+        '200':
+          description: Home page displayed successfully
+
+  /signup:
+    get:
+      summary: Show registration form
+      operationId: register
+      responses:
+        '200':
+          description: Registration form displayed successfully
+
+    post:
+      summary: Register a new user
+      operationId: saveRecord
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '302':
+          description: User registered successfully and redirected to user list
+
+  /table:
+    get:
+      summary: Show vacancy table
+      operationId: showTable
+      responses:
+        '200':
+          description: Vacancy table displayed successfully
+
+  /search:
+    get:
+      summary: Search vacancies
+      operationId: search
+      parameters:
+        - name: vacancy
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/Vacancy'
+      responses:
+        '200':
+          description: Vacancies found successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vacancy'
+
+  /index:
+    get:
+      summary: Show index page
+      operationId: showIndex
+      responses:
+        '302':
+          description: Index page redirected successfully
+
+  /login:
+    get:
+      summary: Show login form
+      operationId: showLogin
+      responses:
+        '200':
+          description: Login form displayed successfully
+
+  /logout:
+    get:
+      summary: Logout user
+      operationId: logout
+      responses:
+        '302':
+          description: User logged out successfully and redirected to login
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Username of the user
+        password:
+          type: string
+          description: Encrypted password of the user
+        status:
+          type: integer
+          description: Status of the user (1 for active, 0 for inactive)
+      required:
+        - username
+        - password
+
+    Vacancy:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Description of the vacancy
+        salary:
+          type: number
+          description: Salary offered for the vacancy
+      required:
+        - description

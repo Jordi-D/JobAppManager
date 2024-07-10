@@ -1,0 +1,117 @@
+openapi: 3.0.0
+info:
+  title: Job Application API
+  description: API for managing job categories.
+  version: 1.0.0
+
+paths:
+  /categories/index:
+    get:
+      summary: Retrieve all categories
+      operationId: getAllCategories
+      responses:
+        '200':
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+
+  /categories/indexPaginate:
+    get:
+      summary: Retrieve paginated categories
+      operationId: getPaginatedCategories
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number
+        - name: size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+          description: Number of items per page
+      responses:
+        '200':
+          description: A page of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+
+  /categories/create:
+    get:
+      summary: Show form to create a new category
+      operationId: showCreateCategoryForm
+      responses:
+        '200':
+          description: Form to create a new category
+
+    post:
+      summary: Create a new category
+      operationId: saveCategory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '302':
+          description: Category created successfully and redirected to paginated view
+
+  /categories/edit/{id}:
+    get:
+      summary: Show form to edit an existing category
+      operationId: showEditCategoryForm
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the category to edit
+      responses:
+        '200':
+          description: Form to edit an existing category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+
+  /categories/delete/{id}:
+    get:
+      summary: Delete an existing category
+      operationId: deleteCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the category to delete
+      responses:
+        '302':
+          description: Category deleted successfully and redirected to paginated view
+
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the category
+        name:
+          type: string
+          description: Name of the category
